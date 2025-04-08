@@ -1,13 +1,12 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:18' // or any version you want
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
+    agent any
 
     environment {
         IMAGE_NAME = "maharshi86/jenkins-api-ci-cd"
+    }
+
+    tools {
+        nodejs "NodeJS 18" // only if you have NodeJS installed as a Jenkins tool
     }
 
     stages {
