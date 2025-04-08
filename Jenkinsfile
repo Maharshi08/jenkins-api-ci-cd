@@ -1,12 +1,13 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:18'
-            args '-u root:root'
-        }
-    }
+    agent any
 
     stages {
+        stage('Clone') {
+            steps {
+                echo 'Cloning repository...'
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
@@ -21,13 +22,13 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'npm run build || echo "No build script defined"'
+                sh 'npm run build || echo "No build step defined"'
             }
         }
 
         stage('Deploy') {
             steps {
-                echo '✅ Deploying... (manual or later automated)'
+                echo '✅ Deploying application...'
             }
         }
     }
