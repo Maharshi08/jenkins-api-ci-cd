@@ -6,7 +6,7 @@ pipeline {
     }
 
     tools {
-        nodejs "NodeJS 18" // only if you have NodeJS installed as a Jenkins tool
+        nodejs "NodeJS 18" // Make sure this is configured in Jenkins
     }
 
     stages {
@@ -20,7 +20,18 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running tests...'
-                sh 'npm test || true'
+                // Start the server in the background and store the PID
+                sh 'nohup npm start & echo $! > server.pid'
+                // Give the server a few seconds to start
+                sh 'sleep 5'
+                // Run tests
+                sh 'npm test'
+            }
+            post {
+                always {
+                    echo 'Stopping the server...'
+                    sh 'kill $(cat server.pid) || true'
+                }
             }
         }
 
