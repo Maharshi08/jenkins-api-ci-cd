@@ -1,6 +1,12 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = 'quote-api'
+        CONTAINER_NAME = 'quote-api-container'
+        PORT = '3000'
+    }
+
     stages {
         stage('Build') {
             steps {
@@ -9,10 +15,20 @@ pipeline {
             }
         }
 
-        stage('Start Server') {
+        stage('Docker Build') {
             steps {
-                echo 'Starting the app...'
-                sh 'nohup npm start & sleep 5' // Start the server in background and wait for it to be ready
+                echo 'Building Docker image...'
+                sh 'docker build -t $IMAGE_NAME .'
+            }
+        }
+
+        stage('Docker Run') {
+            steps {
+                echo 'Running Docker container...'
+                sh '''
+                    docker run -d --rm -p $PORT:$PORT --name $CONTAINER_NAME $IMAGE_NAME
+                    sleep 5
+                '''
             }
         }
 
@@ -23,10 +39,18 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+        stage('Cleanup') {
             steps {
-                echo 'Deployment step (placeholder)'
+                echo 'Stopping Docker container...'
+                sh 'docker stop $CONTAINER_NAME || true'
             }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning up Docker containers if needed...'
+            sh 'docker rm -f $CONTAINER_NAME || true'
         }
     }
 }
