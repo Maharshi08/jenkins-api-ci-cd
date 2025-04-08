@@ -1,4 +1,4 @@
-]pipeline {
+pipeline {
     agent any
 
     stages {
@@ -12,14 +12,14 @@
         stage('Test') {
             steps {
                 echo 'Running tests...'
-                sh 'npm test'
+                sh 'npm test' // only if you have tests
             }
         }
 
         stage('Deploy') {
             steps {
                 echo 'Deployment step (placeholder)'
-                // You can add docker build/push or SCP/rsync commands here
+                // You can add deploy steps here
             }
         }
     }
