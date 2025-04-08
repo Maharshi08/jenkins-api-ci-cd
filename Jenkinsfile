@@ -1,24 +1,12 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'node:18'
+            args '-u root:root'
+        }
+    }
 
     stages {
-        stage('Clone') {
-            steps {
-                git branch: 'main', url: 'https://github.com/Maharshi08/jenkins-api-ci-cd.git'
-            }
-        }
-
-        stage('Install Node.js') {
-            steps {
-                sh '''
-                    curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-                    apt-get install -y nodejs
-                    node -v
-                    npm -v
-                '''
-            }
-        }
-
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
@@ -33,14 +21,13 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'npm run build || echo "No build step defined"'
+                sh 'npm run build || echo "No build script defined"'
             }
         }
 
         stage('Deploy') {
             steps {
-                echo '✅ Deploying...'
-                // Add real deployment script here
+                echo '✅ Deploying... (manual or later automated)'
             }
         }
     }
