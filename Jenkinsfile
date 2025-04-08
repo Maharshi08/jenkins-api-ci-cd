@@ -9,17 +9,23 @@ pipeline {
             }
         }
 
+        stage('Start Server') {
+            steps {
+                echo 'Starting the app...'
+                sh 'nohup npm start & sleep 5' // Start the server in background and wait for it to be ready
+            }
+        }
+
         stage('Test') {
             steps {
                 echo 'Running tests...'
-                sh 'npm test' // only if you have tests
+                sh 'npm test'
             }
         }
 
         stage('Deploy') {
             steps {
                 echo 'Deployment step (placeholder)'
-                // You can add deploy steps here
             }
         }
     }
